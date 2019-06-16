@@ -7,17 +7,66 @@ enum SliderIndicatorPosition {
 }
 
 class PageSlider extends StatefulWidget {
+  ///
+  /// the list for widget passed to the [PageView]
+  ///
   final List<Widget> widgets;
+
+  ///
+  /// true to hide slider indicator widget (dots), false otherwise.
+  ///
   final bool hideSliderIndicator;
+
+  ///
+  /// true to hide pagination indexer widget (left and right arrows), false otherwise
+  ///
   final bool hidePaginationIndexer;
+
+  ///
+  /// true to hide put the slider indicator on top of the [widgets],
+  /// false to put it before/after the widgets according to [sliderIndicatorPosition] value.
+  ///
   final bool overlaySliderIndicator;
+
+  ///
+  /// true to hide pagination indexer widget (left and right arrows), false otherwise
+  ///
   final bool disableSWiping;
+
+  /// Set to false to disable page snapping, useful for custom scroll behavior.
   final bool pageSnapping;
+
+  ///
+  /// see [PageView.reverse]
+  ///
   final bool reverse;
+
+  ///
+  /// see [PageView.scrollDirection]
+  ///
+  final Axis scrollDirection;
+
+  ///
+  /// height og the pageView, if not specified, the [widgets] will take available space.
+  ///
   final double height;
+
+  ///
+  /// the position of the slider Indicator widget
+  /// with two possible value
+  ///   [SliderIndicatorPosition.TOP]
+  ///   [SliderIndicatorPosition.BOTTOM]
+  ///
   final SliderIndicatorPosition sliderIndicatorPosition;
+
+  ///
+  /// callBack when the page changes
+  ///
   final Function(int value) onPageChanged;
 
+  ///
+  /// initial page index, starting from 0,..., [widgets.length]-1
+  ///
   final int initialPage;
 
   @override
@@ -25,7 +74,7 @@ class PageSlider extends StatefulWidget {
 
   const PageSlider({
     Key key,
-    this.widgets,
+    this.widgets = const <Widget>[],
     this.hideSliderIndicator = false,
     this.hidePaginationIndexer = false,
     this.overlaySliderIndicator = false,
@@ -34,9 +83,14 @@ class PageSlider extends StatefulWidget {
     this.pageSnapping = true,
     this.onPageChanged,
     this.height,
-    this.initialPage,
+    this.initialPage = 0,
+    this.scrollDirection = Axis.horizontal,
     this.sliderIndicatorPosition = SliderIndicatorPosition.BOTTOM,
-  }) : super(key: key);
+  })  : assert(
+            initialPage == 0 && widgets.length == 0 ||
+                initialPage < widgets.length,
+            "InitialPage should be less than the number of widgets"),
+        super(key: key);
 }
 
 class _PageSliderState extends State<PageSlider> {
@@ -47,7 +101,7 @@ class _PageSliderState extends State<PageSlider> {
   void initState() {
     super.initState();
     pageController = PageController(
-      //initialPage: widget.initialPage ?? 0,
+      initialPage: widget.initialPage ?? 0,
     );
     _currentIndex = widget.initialPage ?? 0;
   }
@@ -57,11 +111,7 @@ class _PageSliderState extends State<PageSlider> {
     bool isFullScreen = widget.height == null;
     Widget _sliderPagination =
         getSliderPagination(_currentIndex, widget.widgets.length);
-    Widget sliderIndicator = widget.hideSliderIndicator
-        ? Container()
-        : isFullScreen
-            ? Expanded(child: _sliderPagination, flex: 1)
-            : _sliderPagination;
+    Widget sliderIndicator = widget.hideSliderIndicator ? Container() : _sliderPagination;
 
     List<Widget> widgetsListForColumn = <Widget>[
       !isFullScreen
@@ -88,7 +138,6 @@ class _PageSliderState extends State<PageSlider> {
 
   Widget _indexedStack(Widget sliderIndicator) {
     return Container(
-      color: Colors.grey,
       height: widget.height,
       child: Stack(
         children: <Widget>[
@@ -97,8 +146,8 @@ class _PageSliderState extends State<PageSlider> {
             physics:
                 widget.disableSWiping ? NeverScrollableScrollPhysics() : null,
             pageSnapping: widget.pageSnapping,
-            reverse: true,
-            scrollDirection: Axis.horizontal,
+            reverse: widget.reverse,
+            scrollDirection: widget.scrollDirection,
             onPageChanged: (page) {
               setState(() {
                 _currentIndex = page;
@@ -190,6 +239,7 @@ class _PageSliderState extends State<PageSlider> {
 
   Widget getSliderPagination(int currentIndex, int length) {
     return Container(
+      height: 30,
       padding: EdgeInsets.all(10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
