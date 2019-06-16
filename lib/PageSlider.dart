@@ -174,9 +174,7 @@ class _PageSliderState extends State<PageSlider> {
                             Icons.navigate_before,
                             () {
                               if (_currentIndex > 0) {
-                                setState(() {
-                                  --_currentIndex;
-                                });
+                                setState(() => --_currentIndex);
                                 animateTo(_currentIndex);
                               }
                             },
@@ -184,11 +182,8 @@ class _PageSliderState extends State<PageSlider> {
                           getIndexer(
                             Icons.navigate_next,
                             () {
-                              print("$_currentIndex");
                               if (_currentIndex < widget.widgets.length - 1) {
-                                setState(() {
-                                  ++_currentIndex;
-                                });
+                                setState(() => ++_currentIndex);
                                 animateTo(_currentIndex);
                               }
                             },
@@ -214,8 +209,11 @@ class _PageSliderState extends State<PageSlider> {
   }
 
   void animateTo(int page) {
-    pageController.animateToPage(_currentIndex,
-        duration: Duration(seconds: 1), curve: Curves.ease);
+    pageController.animateToPage(
+      _currentIndex,
+      duration: Duration(seconds: 1),
+      curve: Curves.ease,
+    );
   }
 
   Widget getIndexer(IconData icon, Function onPressed) {
