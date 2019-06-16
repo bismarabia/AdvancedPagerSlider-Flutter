@@ -111,14 +111,14 @@ class _PageSliderState extends State<PageSlider> {
   @override
   Widget build(BuildContext context) {
     bool isFullScreen = widget.height == null;
-    Widget _sliderPagination =
-        getSliderPagination(_currentIndex, widget.widgets.length);
-    Widget sliderIndicator = widget.hideSliderIndicator ? Container() : _sliderPagination;
+    Widget sliderIndicator = widget.hideSliderIndicator
+        ? Container()
+        : getSliderIndexer(_currentIndex, widget.widgets.length);
 
     List<Widget> widgetsListForColumn = <Widget>[
       !isFullScreen
-          ? _indexedStack(null)
-          : Expanded(child: _indexedStack(null), flex: 20),
+          ? getPageViewWidget()
+          : Expanded(child: getPageViewWidget(), flex: 20),
       sliderIndicator,
     ];
 
@@ -126,8 +126,11 @@ class _PageSliderState extends State<PageSlider> {
         ? Column(
             children: <Widget>[
               !isFullScreen
-                  ? _indexedStack(sliderIndicator)
-                  : Expanded(child: _indexedStack(sliderIndicator), flex: 20)
+                  ? getPageViewWidget(sliderIndicator: sliderIndicator)
+                  : Expanded(
+                      child: getPageViewWidget(sliderIndicator: sliderIndicator),
+                      flex: 20,
+                    )
             ],
           )
         : Column(
@@ -138,22 +141,19 @@ class _PageSliderState extends State<PageSlider> {
           );
   }
 
-  Widget _indexedStack(Widget sliderIndicator) {
+  Widget getPageViewWidget({Widget sliderIndicator}) {
     return Container(
       height: widget.height,
       child: Stack(
         children: <Widget>[
           PageView(
             controller: pageController,
-            physics:
-                widget.disableSWiping ? NeverScrollableScrollPhysics() : null,
+            physics: widget.disableSWiping ? NeverScrollableScrollPhysics() : null,
             pageSnapping: widget.pageSnapping,
             reverse: widget.reverse,
             scrollDirection: widget.scrollDirection,
             onPageChanged: (page) {
-              setState(() {
-                _currentIndex = page;
-              });
+              setState(() => _currentIndex = page);
               if (widget.onPageChanged != null) {
                 widget.onPageChanged(page);
               }
@@ -172,7 +172,7 @@ class _PageSliderState extends State<PageSlider> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-                          getIndexer(
+                          getPaginationIndexer(
                             Icons.navigate_before,
                             () {
                               if (_currentIndex > 0) {
@@ -181,7 +181,7 @@ class _PageSliderState extends State<PageSlider> {
                               }
                             },
                           ),
-                          getIndexer(
+                          getPaginationIndexer(
                             Icons.navigate_next,
                             () {
                               if (_currentIndex < widget.widgets.length - 1) {
@@ -227,7 +227,7 @@ class _PageSliderState extends State<PageSlider> {
     }
   }
 
-  Widget getIndexer(IconData icon, Function onPressed) {
+  Widget getPaginationIndexer(IconData icon, Function onPressed) {
     return Container(
       width: 30,
       height: 30,
@@ -246,7 +246,7 @@ class _PageSliderState extends State<PageSlider> {
     );
   }
 
-  Widget getSliderPagination(int currentIndex, int length) {
+  Widget getSliderIndexer(int currentIndex, int length) {
     return Container(
       height: 30,
       padding: EdgeInsets.all(10),
