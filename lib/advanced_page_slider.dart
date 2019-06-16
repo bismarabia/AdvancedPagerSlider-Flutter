@@ -89,7 +89,7 @@ class PageSlider extends StatefulWidget {
   })  : assert(
             initialPage == 0 && widgets.length == 0 ||
                 initialPage < widgets.length,
-            "InitialPage should be less than the number of widgets"),
+            "InitialPage cannot be null and it should be strictly less than the number of widgets"),
         super(key: key);
 }
 
