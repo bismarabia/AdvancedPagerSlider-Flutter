@@ -1,3 +1,7 @@
 ## 0.0.1
 
-- Initial version
+- Initial version.
+
+## 0.0.2
+
+- added CHANGELOG.md file.
