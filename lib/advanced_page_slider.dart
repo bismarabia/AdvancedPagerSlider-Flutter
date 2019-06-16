@@ -128,7 +128,8 @@ class _PageSliderState extends State<PageSlider> {
               !isFullScreen
                   ? getPageViewWidget(sliderIndicator: sliderIndicator)
                   : Expanded(
-                      child: getPageViewWidget(sliderIndicator: sliderIndicator),
+                      child:
+                          getPageViewWidget(sliderIndicator: sliderIndicator),
                       flex: 20,
                     )
             ],
@@ -148,7 +149,8 @@ class _PageSliderState extends State<PageSlider> {
         children: <Widget>[
           PageView(
             controller: pageController,
-            physics: widget.disableSWiping ? NeverScrollableScrollPhysics() : null,
+            physics:
+                widget.disableSWiping ? NeverScrollableScrollPhysics() : null,
             pageSnapping: widget.pageSnapping,
             reverse: widget.reverse,
             scrollDirection: widget.scrollDirection,
@@ -218,7 +220,8 @@ class _PageSliderState extends State<PageSlider> {
     );
     if (_scrollController.hasClients) {
       double offset = _currentIndex + 10.0;
-      offset = increase ? offset + 3 * _currentIndex : offset - 3 * _currentIndex;
+      offset =
+          increase ? offset + 3 * _currentIndex : offset - 3 * _currentIndex;
       _scrollController.animateTo(
         offset,
         duration: Duration(milliseconds: 500),

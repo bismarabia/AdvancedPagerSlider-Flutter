@@ -13,3 +13,7 @@
 ## 0.0.4
 
 - added README.md file.
+
+## 0.1.0
+
+- updated README.md file.

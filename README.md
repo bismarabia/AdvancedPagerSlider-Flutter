@@ -1,6 +1,6 @@
 # AdvancedPagerSlider-Flutter
 
-An Advanced version of Flutter [PageView] (https://github.com/bismarabia/AdvancedPagerSlider-Flutter) with more extra awesome widgets.
+An Advanced version of Flutter [PageView] [github-link] with more extra awesome widgets.
 
 ## Usage
 
@@ -76,3 +76,6 @@ class _MyHomePageState extends State<MyHomePage> {
 ## License
 
 MIT
+
+
+[github-link]: <https://github.com/bismarabia/AdvancedPagerSlider-Flutter>
