@@ -97,6 +97,8 @@ class _PageSliderState extends State<PageSlider> {
   PageController pageController;
   int _currentIndex;
 
+  ScrollController _scrollController = ScrollController(initialScrollOffset: 0);
+
   @override
   void initState() {
     super.initState();
@@ -175,7 +177,7 @@ class _PageSliderState extends State<PageSlider> {
                             () {
                               if (_currentIndex > 0) {
                                 setState(() => --_currentIndex);
-                                animateTo(_currentIndex);
+                                animateTo(_currentIndex, increase: false);
                               }
                             },
                           ),
@@ -208,12 +210,21 @@ class _PageSliderState extends State<PageSlider> {
     );
   }
 
-  void animateTo(int page) {
+  void animateTo(int page, {bool increase = true}) {
     pageController.animateToPage(
       _currentIndex,
       duration: Duration(seconds: 1),
       curve: Curves.ease,
     );
+    if (_scrollController.hasClients) {
+      double offset = _currentIndex + 10.0;
+      offset = increase ? offset + 3 * _currentIndex : offset - 3 * _currentIndex;
+      _scrollController.animateTo(
+        offset,
+        duration: Duration(milliseconds: 500),
+        curve: Curves.linear,
+      );
+    }
   }
 
   Widget getIndexer(IconData icon, Function onPressed) {
@@ -239,31 +250,33 @@ class _PageSliderState extends State<PageSlider> {
     return Container(
       height: 30,
       padding: EdgeInsets.all(10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: List<Padding>.generate(length, (i) {
-          return Padding(
-            padding: EdgeInsets.only(right: 3),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(10),
-              child: Container(
-                height: 10,
-                width: 10,
-                decoration: new BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: currentIndex == i ? Colors.grey : Color(0xffe2e2e2),
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        controller: _scrollController,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: List<Padding>.generate(length, (i) {
+            return Padding(
+              padding: EdgeInsets.only(right: 3),
+              child: InkWell(
+                borderRadius: BorderRadius.circular(10),
+                child: Container(
+                  height: 10,
+                  width: 10,
+                  decoration: new BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: currentIndex == i ? Colors.grey : Color(0xffe2e2e2),
+                  ),
                 ),
+                onTap: () {
+                  setState(() => _currentIndex = i);
+                  animateTo(_currentIndex);
+                },
               ),
-              onTap: () {
-                setState(() {
-                  _currentIndex = i;
-                });
-                animateTo(_currentIndex);
-              },
-            ),
-          );
-        }),
+            );
+          }),
+        ),
       ),
     );
   }
