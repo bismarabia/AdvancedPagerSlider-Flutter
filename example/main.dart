@@ -1,4 +1,4 @@
-import 'package:advanced_page_slider/PageSlider.dart';
+import 'package:advanced_page_slider/advanced_page_slider.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
